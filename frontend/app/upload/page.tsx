@@ -35,9 +35,8 @@ export default function UploadPage() {
     formData.append('file', selectedFile)
 
     try {
-      // Use environment variable for API URL, fallback to localhost for development
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
-      const response = await axios.post(`${apiUrl}/predict`, formData, {
+      // Use Next.js API route
+      const response = await axios.post('/api/predict', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
 
