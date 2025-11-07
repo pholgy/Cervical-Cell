@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(NUL)",
+      "Bash(dir:*)",
+      "Bash(cat:*)",
+      "Bash(python test_data_loading.py:*)",
+      "Bash(python verify_structure.py:*)",
+      "Bash(python -m pip:*)",
+      "Bash(python test_simple.py:*)",
+      "Bash(python3.11:*)",
+      "Bash(python3:*)",
+      "Bash(where:*)",
+      "Bash(py --list:*)",
+      "Bash(py:*)",
+      "Bash(npx create-next-app:*)",
+      "Bash(npm install:*)",
+      "Bash(.gitignore)",
+      "Bash(curl:*)",
+      "Bash(timeout /t 3 /nobreak)",
+      "Bash(nul)",
+      "Bash(requirements.txt)",
+      "Bash(runtime.txt)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git branch:*)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

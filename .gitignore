@@ -1,0 +1,45 @@
+# Environment
+.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Models (too large for git)
+*.h5
+models/*.h5
+
+# Keep models directory structure but ignore model files
+!models/.gitkeep
+
+# Node
+node_modules/
+.next/
+out/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+NUL
+nul
+
+# Data - exclude all dataset images
+data/
+im_Dyskeratotic/
+im_Koilocytotic/
+im_Metaplastic/
+im_Parabasal/
+im_Superficial-Intermediate/
+*.bmp
+*.dat
