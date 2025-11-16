@@ -44,7 +44,7 @@ export default function Home() {
         <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '1.25rem 2rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <Activity style={{ width: '2.5rem', height: '2.5rem', color: '#4f46e5' }} />
+              <Activity style={{ width: '2.5rem', height: '2.5rem', color: '#db2777' }} />
               <div>
                 <h1 style={{ fontSize: '1.75rem', fontWeight: '700', color: '#1f2937', margin: 0 }}>
                   Cervical Cell Classifier
@@ -58,7 +58,7 @@ export default function Home() {
               onClick={() => router.push('/upload')}
               style={{
                 padding: '0.75rem 1.5rem',
-                background: '#4f46e5',
+                background: '#db2777',
                 color: 'white',
                 borderRadius: '0.5rem',
                 fontWeight: '600',
@@ -69,8 +69,8 @@ export default function Home() {
                 gap: '0.5rem',
                 transition: 'background 0.2s'
               }}
-              onMouseOver={(e) => e.currentTarget.style.background = '#4338ca'}
-              onMouseOut={(e) => e.currentTarget.style.background = '#4f46e5'}
+              onMouseOver={(e) => e.currentTarget.style.background = '#be185d'}
+              onMouseOut={(e) => e.currentTarget.style.background = '#db2777'}
             >
               Get Started
               <ArrowRight style={{ width: '1.25rem', height: '1.25rem' }} />
@@ -85,13 +85,13 @@ export default function Home() {
           <div style={{
             display: 'inline-block',
             padding: '0.5rem 1.25rem',
-            background: '#eef2ff',
+            background: '#fdf2f8',
             borderRadius: '2rem',
-            color: '#4f46e5',
+            color: '#db2777',
             fontSize: '0.875rem',
             fontWeight: '600',
             marginBottom: '2rem',
-            border: '1px solid #c7d2fe'
+            border: '1px solid #fbcfe8'
           }}>
             Welcome to Cervical Cell Classification System
           </div>
@@ -121,7 +121,7 @@ export default function Home() {
             onClick={() => router.push('/upload')}
             style={{
               padding: '1.25rem 2.5rem',
-              background: '#4f46e5',
+              background: '#db2777',
               color: 'white',
               borderRadius: '0.5rem',
               fontWeight: '600',
@@ -134,8 +134,8 @@ export default function Home() {
               transition: 'background 0.2s',
               boxShadow: '0 4px 12px rgba(79, 70, 229, 0.3)'
             }}
-            onMouseOver={(e) => e.currentTarget.style.background = '#4338ca'}
-            onMouseOut={(e) => e.currentTarget.style.background = '#4f46e5'}
+            onMouseOver={(e) => e.currentTarget.style.background = '#be185d'}
+            onMouseOut={(e) => e.currentTarget.style.background = '#db2777'}
           >
             <Upload style={{ width: '1.5rem', height: '1.5rem' }} />
             Start Classification
@@ -171,7 +171,7 @@ export default function Home() {
                 <div style={{
                   width: '4rem',
                   height: '4rem',
-                  background: '#4f46e5',
+                  background: '#db2777',
                   borderRadius: '0.75rem',
                   display: 'flex',
                   alignItems: 'center',
@@ -232,14 +232,14 @@ export default function Home() {
                 <div style={{
                   width: '3.5rem',
                   height: '3.5rem',
-                  background: '#eef2ff',
+                  background: '#fdf2f8',
                   borderRadius: '0.75rem',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginBottom: '1.5rem'
                 }}>
-                  <Icon style={{ width: '1.75rem', height: '1.75rem', color: '#4f46e5' }} />
+                  <Icon style={{ width: '1.75rem', height: '1.75rem', color: '#db2777' }} />
                 </div>
                 <h3 style={{
                   fontSize: '1.25rem',
@@ -345,9 +345,9 @@ export default function Home() {
           textAlign: 'center',
           marginTop: '5rem',
           padding: '3rem',
-          background: '#eef2ff',
+          background: '#fdf2f8',
           borderRadius: '1rem',
-          border: '1px solid #c7d2fe'
+          border: '1px solid #fbcfe8'
         }}>
           <h2 style={{
             fontSize: '2rem',
@@ -368,7 +368,7 @@ export default function Home() {
             onClick={() => router.push('/upload')}
             style={{
               padding: '1.25rem 2.5rem',
-              background: '#4f46e5',
+              background: '#db2777',
               color: 'white',
               borderRadius: '0.5rem',
               fontWeight: '600',
@@ -380,8 +380,8 @@ export default function Home() {
               gap: '0.75rem',
               transition: 'background 0.2s'
             }}
-            onMouseOver={(e) => e.currentTarget.style.background = '#4338ca'}
-            onMouseOut={(e) => e.currentTarget.style.background = '#4f46e5'}
+            onMouseOver={(e) => e.currentTarget.style.background = '#be185d'}
+            onMouseOut={(e) => e.currentTarget.style.background = '#db2777'}
           >
             <Upload style={{ width: '1.5rem', height: '1.5rem' }} />
             Upload Image Now

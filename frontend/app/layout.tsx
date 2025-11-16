@@ -4,6 +4,9 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'Cervical Cell Classifier',
   description: 'AI-powered cervical cell classification system',
+  icons: {
+    icon: '/icon.jpg',
+  },
 }
 
 export default function RootLayout({

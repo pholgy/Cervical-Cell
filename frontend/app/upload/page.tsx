@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
-import { Upload, Activity, Loader2, XCircle, Home } from 'lucide-react'
+import { Upload, Activity, Loader2, XCircle, Home, UserPlus, ArrowRight } from 'lucide-react'
 
 export default function UploadPage() {
   const router = useRouter()
@@ -11,6 +11,12 @@ export default function UploadPage() {
   const [preview, setPreview] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showRegistration, setShowRegistration] = useState(false)
+  const [pendingPrediction, setPendingPrediction] = useState<any>(null)
+  const [patientName, setPatientName] = useState('')
+  const [patientPhone, setPatientPhone] = useState('')
+  const [registerLoading, setRegisterLoading] = useState(false)
+  const [registerError, setRegisterError] = useState<string | null>(null)
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -50,16 +56,55 @@ export default function UploadPage() {
         return
       }
 
-      // Store prediction data in sessionStorage instead of URL
-      sessionStorage.setItem('predictionData', JSON.stringify(response.data))
-
-      // Navigate to results page
-      router.push('/results')
+      // Store prediction data temporarily and show registration modal
+      setPendingPrediction(response.data)
+      setShowRegistration(true)
     } catch (err) {
       setError('Failed to get prediction. Make sure API is running on port 8000.')
       console.error('Error:', err)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleRegister = async () => {
+    if (!patientName.trim() || !patientPhone.trim()) {
+      setRegisterError('Please fill in all fields')
+      return
+    }
+
+    setRegisterLoading(true)
+    setRegisterError(null)
+
+    try {
+      const response = await fetch('/api/patients', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: patientName.trim(), phone: patientPhone.trim() }),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        // Store patient info in sessionStorage
+        sessionStorage.setItem('patientInfo', JSON.stringify({
+          name: patientName.trim(),
+          phone: patientPhone.trim()
+        }))
+
+        // Store prediction data and navigate to results
+        sessionStorage.setItem('predictionData', JSON.stringify(pendingPrediction))
+        router.push('/results')
+      } else {
+        setRegisterError(data.error || 'Registration failed')
+      }
+    } catch (err) {
+      setRegisterError('Failed to register. Please try again.')
+      console.error('Error:', err)
+    } finally {
+      setRegisterLoading(false)
     }
   }
 
@@ -85,7 +130,7 @@ export default function UploadPage() {
         <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '1.25rem 2rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <Activity style={{ width: '2.5rem', height: '2.5rem', color: '#4f46e5' }} />
+              <Activity style={{ width: '2.5rem', height: '2.5rem', color: '#db2777' }} />
               <div>
                 <h1 style={{ fontSize: '1.75rem', fontWeight: '700', color: '#1f2937', margin: 0 }}>
                   Cervical Cell Classifier
@@ -100,10 +145,10 @@ export default function UploadPage() {
               style={{
                 padding: '0.75rem 1.5rem',
                 background: 'white',
-                color: '#4f46e5',
+                color: '#db2777',
                 borderRadius: '0.5rem',
                 fontWeight: '600',
-                border: '1px solid #4f46e5',
+                border: '1px solid #db2777',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -111,12 +156,12 @@ export default function UploadPage() {
                 transition: 'all 0.2s'
               }}
               onMouseOver={(e) => {
-                e.currentTarget.style.background = '#4f46e5'
+                e.currentTarget.style.background = '#db2777'
                 e.currentTarget.style.color = 'white'
               }}
               onMouseOut={(e) => {
                 e.currentTarget.style.background = 'white'
-                e.currentTarget.style.color = '#4f46e5'
+                e.currentTarget.style.color = '#db2777'
               }}
             >
               <Home style={{ width: '1.25rem', height: '1.25rem' }} />
@@ -144,7 +189,7 @@ export default function UploadPage() {
             alignItems: 'center',
             gap: '0.75rem',
             padding: '0.75rem 1.25rem',
-            background: '#4f46e5',
+            background: '#db2777',
             borderRadius: '0.5rem',
             color: 'white'
           }}>
@@ -153,7 +198,7 @@ export default function UploadPage() {
               height: '1.75rem',
               borderRadius: '50%',
               background: 'white',
-              color: '#4f46e5',
+              color: '#db2777',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -209,7 +254,7 @@ export default function UploadPage() {
               border: '1px solid #e5e7eb'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-                <Upload style={{ width: '1.25rem', height: '1.25rem', color: '#4f46e5' }} />
+                <Upload style={{ width: '1.25rem', height: '1.25rem', color: '#db2777' }} />
                 <h2 style={{ fontSize: '1.25rem', fontWeight: '700', color: '#1f2937', margin: 0 }}>
                   Upload Cell Image
                 </h2>
@@ -236,8 +281,8 @@ export default function UploadPage() {
                     background: '#f9fafb'
                   }}
                   onMouseOver={(e) => {
-                    e.currentTarget.style.borderColor = '#4f46e5'
-                    e.currentTarget.style.background = '#eef2ff'
+                    e.currentTarget.style.borderColor = '#db2777'
+                    e.currentTarget.style.background = '#fdf2f8'
                   }}
                   onMouseOut={(e) => {
                     e.currentTarget.style.borderColor = '#d1d5db'
@@ -300,7 +345,7 @@ export default function UploadPage() {
                       style={{
                         flex: 2,
                         padding: '0.875rem 1.5rem',
-                        background: '#4f46e5',
+                        background: '#db2777',
                         color: 'white',
                         borderRadius: '0.5rem',
                         fontWeight: '600',
@@ -313,8 +358,8 @@ export default function UploadPage() {
                         opacity: loading ? 0.6 : 1,
                         transition: 'background 0.2s'
                       }}
-                      onMouseOver={(e) => !loading && (e.currentTarget.style.background = '#4338ca')}
-                      onMouseOut={(e) => e.currentTarget.style.background = '#4f46e5'}
+                      onMouseOver={(e) => !loading && (e.currentTarget.style.background = '#be185d')}
+                      onMouseOut={(e) => e.currentTarget.style.background = '#db2777'}
                     >
                       {loading ? (
                         <>
@@ -401,11 +446,11 @@ export default function UploadPage() {
               <div style={{
                 marginTop: '1rem',
                 padding: '1rem',
-                background: '#eef2ff',
+                background: '#fdf2f8',
                 borderRadius: '0.625rem',
-                border: '1px solid #c7d2fe'
+                border: '1px solid #fbcfe8'
               }}>
-                <h4 style={{ fontSize: '0.8125rem', fontWeight: '700', color: '#4f46e5', marginBottom: '0.5rem' }}>
+                <h4 style={{ fontSize: '0.8125rem', fontWeight: '700', color: '#db2777', marginBottom: '0.5rem' }}>
                   How Classification Works
                 </h4>
                 <ul style={{ fontSize: '0.75rem', color: '#6b7280', margin: 0, paddingLeft: '1.125rem', lineHeight: 1.5 }}>
@@ -420,6 +465,163 @@ export default function UploadPage() {
         </div>
       </main>
 
+
+      {/* Registration Modal */}
+      {showRegistration && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          padding: '1rem'
+        }}>
+          <div style={{
+            background: 'white',
+            borderRadius: '1rem',
+            padding: '2rem',
+            maxWidth: '500px',
+            width: '100%',
+            boxShadow: '0 25px 50px rgba(0, 0, 0, 0.25)'
+          }}>
+            <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+              <div style={{
+                width: '3.5rem',
+                height: '3.5rem',
+                background: '#fdf2f8',
+                borderRadius: '0.75rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 1rem'
+              }}>
+                <UserPlus style={{ width: '1.75rem', height: '1.75rem', color: '#db2777' }} />
+              </div>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#1f2937', marginBottom: '0.5rem' }}>
+                Patient Registration
+              </h2>
+              <p style={{ fontSize: '0.875rem', color: '#6b7280', lineHeight: 1.5 }}>
+                Please enter patient information to view results
+              </p>
+            </div>
+
+            <div style={{ marginBottom: '1.25rem' }}>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '600',
+                color: '#374151',
+                marginBottom: '0.5rem'
+              }}>
+                Patient Name
+              </label>
+              <input
+                type="text"
+                value={patientName}
+                onChange={(e) => setPatientName(e.target.value)}
+                placeholder="Enter patient name"
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem',
+                  fontSize: '0.9375rem',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '0.5rem',
+                  outline: 'none',
+                  transition: 'border-color 0.2s',
+                  boxSizing: 'border-box'
+                }}
+                onFocus={(e) => e.currentTarget.style.borderColor = '#db2777'}
+                onBlur={(e) => e.currentTarget.style.borderColor = '#d1d5db'}
+              />
+            </div>
+
+            <div style={{ marginBottom: '1.25rem' }}>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '600',
+                color: '#374151',
+                marginBottom: '0.5rem'
+              }}>
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                value={patientPhone}
+                onChange={(e) => setPatientPhone(e.target.value)}
+                placeholder="Enter phone number"
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem',
+                  fontSize: '0.9375rem',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '0.5rem',
+                  outline: 'none',
+                  transition: 'border-color 0.2s',
+                  boxSizing: 'border-box'
+                }}
+                onFocus={(e) => e.currentTarget.style.borderColor = '#db2777'}
+                onBlur={(e) => e.currentTarget.style.borderColor = '#d1d5db'}
+              />
+            </div>
+
+            {registerError && (
+              <div style={{
+                padding: '0.75rem',
+                background: '#fef2f2',
+                border: '1px solid #fecaca',
+                borderRadius: '0.5rem',
+                color: '#b91c1c',
+                fontSize: '0.8125rem',
+                marginBottom: '1.25rem'
+              }}>
+                {registerError}
+              </div>
+            )}
+
+            <button
+              onClick={handleRegister}
+              disabled={registerLoading}
+              style={{
+                width: '100%',
+                padding: '0.875rem',
+                background: '#db2777',
+                color: 'white',
+                borderRadius: '0.5rem',
+                fontWeight: '600',
+                fontSize: '0.9375rem',
+                border: 'none',
+                cursor: registerLoading ? 'not-allowed' : 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                opacity: registerLoading ? 0.6 : 1,
+                transition: 'background 0.2s'
+              }}
+              onMouseOver={(e) => !registerLoading && (e.currentTarget.style.background = '#be185d')}
+              onMouseOut={(e) => e.currentTarget.style.background = '#db2777'}
+            >
+              {registerLoading ? (
+                <>
+                  <Loader2 style={{ width: '1.125rem', height: '1.125rem', animation: 'spin 1s linear infinite' }} />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  View Results
+                  <ArrowRight style={{ width: '1.125rem', height: '1.125rem' }} />
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      )}
 
       <style jsx>{`
         @keyframes spin {

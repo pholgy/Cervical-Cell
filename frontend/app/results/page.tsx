@@ -99,7 +99,7 @@ function ResultsContent() {
         <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '1.25rem 2rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <Activity style={{ width: '2.5rem', height: '2.5rem', color: '#4f46e5' }} />
+              <Activity style={{ width: '2.5rem', height: '2.5rem', color: '#db2777' }} />
               <div>
                 <h1 style={{ fontSize: '1.75rem', fontWeight: '700', color: '#1f2937', margin: 0 }}>
                   Cervical Cell Classifier
@@ -115,10 +115,10 @@ function ResultsContent() {
                 style={{
                   padding: '0.75rem 1.5rem',
                   background: 'white',
-                  color: '#4f46e5',
+                  color: '#db2777',
                   borderRadius: '0.5rem',
                   fontWeight: '600',
-                  border: '1px solid #4f46e5',
+                  border: '1px solid #db2777',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
@@ -126,12 +126,12 @@ function ResultsContent() {
                   transition: 'all 0.2s'
                 }}
                 onMouseOver={(e) => {
-                  e.currentTarget.style.background = '#4f46e5'
+                  e.currentTarget.style.background = '#db2777'
                   e.currentTarget.style.color = 'white'
                 }}
                 onMouseOut={(e) => {
                   e.currentTarget.style.background = 'white'
-                  e.currentTarget.style.color = '#4f46e5'
+                  e.currentTarget.style.color = '#db2777'
                 }}
               >
                 <Upload style={{ width: '1.25rem', height: '1.25rem' }} />
@@ -211,7 +211,7 @@ function ResultsContent() {
             alignItems: 'center',
             gap: '0.75rem',
             padding: '0.75rem 1.25rem',
-            background: '#4f46e5',
+            background: '#db2777',
             borderRadius: '0.5rem',
             color: 'white'
           }}>
@@ -220,7 +220,7 @@ function ResultsContent() {
               height: '1.75rem',
               borderRadius: '50%',
               background: 'white',
-              color: '#4f46e5',
+              color: '#db2777',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -289,7 +289,7 @@ function ResultsContent() {
           <div>
             {/* Main Prediction Card */}
             <div style={{
-              background: predictedCellType?.color || '#4f46e5',
+              background: predictedCellType?.color || '#db2777',
               borderRadius: '1rem',
               padding: '2rem',
               color: 'white',
@@ -325,7 +325,7 @@ function ResultsContent() {
               border: '1px solid #e5e7eb'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-                <Activity style={{ width: '1rem', height: '1rem', color: '#4f46e5' }} />
+                <Activity style={{ width: '1rem', height: '1rem', color: '#db2777' }} />
                 <h3 style={{ fontSize: '1rem', fontWeight: '700', color: '#1f2937', margin: 0 }}>
                   Cell Type Information
                 </h3>
@@ -353,7 +353,7 @@ function ResultsContent() {
               marginBottom: '1rem'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-                <BarChart3 style={{ width: '1rem', height: '1rem', color: '#4f46e5' }} />
+                <BarChart3 style={{ width: '1rem', height: '1rem', color: '#db2777' }} />
                 <h3 style={{ fontSize: '1rem', fontWeight: '700', color: '#1f2937', margin: 0 }}>
                   All Classification Probabilities
                 </h3>
@@ -370,8 +370,8 @@ function ResultsContent() {
                       <div key={className} style={{
                         padding: '0.75rem',
                         borderRadius: '0.375rem',
-                        background: isTop ? '#eef2ff' : '#f9fafb',
-                        border: isTop ? '1px solid #c7d2fe' : '1px solid #e5e7eb',
+                        background: isTop ? '#fdf2f8' : '#f9fafb',
+                        border: isTop ? '1px solid #fbcfe8' : '1px solid #e5e7eb',
                         marginBottom: '0.5rem'
                       }}>
                         <div style={{
@@ -391,7 +391,7 @@ function ResultsContent() {
                             <span style={{
                               fontWeight: '600',
                               fontSize: '0.8125rem',
-                              color: isTop ? '#4f46e5' : '#374151'
+                              color: isTop ? '#db2777' : '#374151'
                             }}>
                               {className}
                             </span>
@@ -399,7 +399,7 @@ function ResultsContent() {
                           <span style={{
                             fontWeight: '700',
                             fontSize: '0.875rem',
-                            color: isTop ? '#4f46e5' : '#6b7280'
+                            color: isTop ? '#db2777' : '#6b7280'
                           }}>
                             {percentage}%
                           </span>
@@ -434,7 +434,7 @@ function ResultsContent() {
               border: '1px solid #e5e7eb'
             }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-                <Sparkles style={{ width: '1rem', height: '1rem', color: '#4f46e5' }} />
+                <Sparkles style={{ width: '1rem', height: '1rem', color: '#db2777' }} />
                 <h3 style={{ fontSize: '1rem', fontWeight: '700', color: '#1f2937', margin: 0 }}>
                   AI Medical Explanation
                 </h3>
@@ -508,7 +508,7 @@ function ResultsContent() {
             onClick={() => router.push('/upload')}
             style={{
               padding: '0.75rem 1.5rem',
-              background: '#4f46e5',
+              background: '#db2777',
               color: 'white',
               borderRadius: '0.5rem',
               fontWeight: '600',
@@ -520,8 +520,8 @@ function ResultsContent() {
               gap: '0.5rem',
               transition: 'background 0.2s'
             }}
-            onMouseOver={(e) => e.currentTarget.style.background = '#4338ca'}
-            onMouseOut={(e) => e.currentTarget.style.background = '#4f46e5'}
+            onMouseOver={(e) => e.currentTarget.style.background = '#be185d'}
+            onMouseOut={(e) => e.currentTarget.style.background = '#db2777'}
           >
             <Upload style={{ width: '1rem', height: '1rem' }} />
             Analyze Another Image

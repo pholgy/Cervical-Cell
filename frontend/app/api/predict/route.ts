@@ -80,7 +80,7 @@ Base your classification on visible features. Even if uncertain, you MUST provid
     const processingTime = (Date.now() - startTime) / 1000
 
     // Generate explanation
-    const explanationPrompt = `You are a medical AI assistant. Write a comprehensive medical explanation in MARKDOWN format (NOT JSON) for healthcare professionals.
+    const explanationPrompt = `You are a medical AI assistant. Write a comprehensive medical explanation in MARKDOWN format (NOT JSON) for healthcare professionals. IMPORTANT: Provide the explanation in BOTH English AND Thai languages.
 
 Classification Result:
 - Predicted Cell Type: ${predictedClass}
@@ -90,21 +90,25 @@ Classification Result:
 All Probabilities:
 ${Object.entries(probabilities).map(([cls, prob]) => `- ${cls}: ${(prob * 100).toFixed(1)}%`).join('\n')}
 
-Write a markdown-formatted explanation with these sections:
+Write a bilingual markdown-formatted explanation with these sections. For EACH section, provide English first, then Thai translation:
 
-## Cell Type Explanation
-Explain what ${predictedClass} cells are (2-3 sentences).
+## Cell Type Explanation / คำอธิบายประเภทเซลล์
+**English:** Explain what ${predictedClass} cells are (2-3 sentences).
+**ภาษาไทย:** คำอธิบายเดียวกันเป็นภาษาไทย
 
-## Clinical Significance
-What this finding indicates and its clinical importance.
+## Clinical Significance / ความสำคัญทางคลินิก
+**English:** What this finding indicates and its clinical importance.
+**ภาษาไทย:** คำอธิบายเดียวกันเป็นภาษาไทย
 
-## Model Confidence
-Why the model is confident (${(confidence * 100).toFixed(1)}%) based on the probabilities and image features.
+## Model Confidence / ความเชื่อมั่นของโมเดล
+**English:** Why the model is confident (${(confidence * 100).toFixed(1)}%) based on the probabilities and image features.
+**ภาษาไทย:** คำอธิบายเดียวกันเป็นภาษาไทย
 
-## Considerations & Recommendations
-Important clinical points and recommendations for follow-up.
+## Considerations & Recommendations / ข้อควรพิจารณาและคำแนะนำ
+**English:** Important clinical points and recommendations for follow-up.
+**ภาษาไทย:** คำอธิบายเดียวกันเป็นภาษาไทย
 
-Keep it concise, professional, and actionable. Use proper markdown formatting with headers (##), bold (**text**), and lists. Max 200 words. DO NOT use JSON format - use plain markdown text.`
+Keep it concise, professional, and actionable. Use proper markdown formatting with headers (##), bold (**text**), and lists. Provide accurate Thai medical terminology. DO NOT use JSON format - use plain markdown text.`
 
     const explanationModel = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' })
     const explanationResult = await explanationModel.generateContent(explanationPrompt)
