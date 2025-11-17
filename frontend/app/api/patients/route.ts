@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const FIREBASE_PROJECT_ID = 'peakily-ml-proj'
-const FIREBASE_DB_URL = `https://${FIREBASE_PROJECT_ID}-default-rtdb.asia-southeast1.firebaserealtimedb.app`
+const FIREBASE_DB_URL = 'https://peakily-ml-proj-default-rtdb.firebaseio.com'
 const FIREBASE_API_KEY = process.env.FIREBASE_API_KEY
 
 export async function POST(request: NextRequest) {
