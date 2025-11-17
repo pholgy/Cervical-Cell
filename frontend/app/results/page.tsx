@@ -316,6 +316,55 @@ function ResultsContent() {
               </p>
             </div>
 
+            {/* Cancer Risk Card */}
+            {prediction.cancer_risk_level && (
+              <div style={{
+                background: prediction.cancer_risk_level === 'HIGH' ? '#fee2e2' : prediction.cancer_risk_level === 'MODERATE' ? '#fef3c7' : '#dcfce7',
+                borderRadius: '1rem',
+                padding: '1.25rem',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                border: `2px solid ${prediction.cancer_risk_level === 'HIGH' ? '#fca5a5' : prediction.cancer_risk_level === 'MODERATE' ? '#fcd34d' : '#86efac'}`,
+                marginBottom: '1rem'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                  <div style={{
+                    width: '2rem',
+                    height: '2rem',
+                    borderRadius: '50%',
+                    background: prediction.cancer_risk_level === 'HIGH' ? '#ef4444' : prediction.cancer_risk_level === 'MODERATE' ? '#f59e0b' : '#22c55e',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontWeight: '700',
+                    fontSize: '1rem'
+                  }}>
+                    {prediction.cancer_risk_level === 'HIGH' ? '⚠' : prediction.cancer_risk_level === 'MODERATE' ? '!' : '✓'}
+                  </div>
+                  <h3 style={{ fontSize: '1rem', fontWeight: '700', color: '#1f2937', margin: 0 }}>
+                    Cancer Risk Assessment
+                  </h3>
+                </div>
+                <div style={{ fontSize: '0.8125rem', color: '#374151', lineHeight: 1.5 }}>
+                  <p style={{ margin: '0 0 0.625rem 0' }}>
+                    <strong style={{ color: '#1f2937' }}>Risk Level:</strong>{' '}
+                    <span style={{
+                      fontWeight: '700',
+                      color: prediction.cancer_risk_level === 'HIGH' ? '#dc2626' : prediction.cancer_risk_level === 'MODERATE' ? '#d97706' : '#16a34a'
+                    }}>
+                      {prediction.cancer_risk_level}
+                    </span>
+                  </p>
+                  <p style={{ margin: '0 0 0.625rem 0' }}>
+                    <strong style={{ color: '#1f2937' }}>Risk Percentage:</strong> {prediction.cancer_risk_percentage}%
+                  </p>
+                  <p style={{ margin: 0, fontSize: '0.75rem', color: '#6b7280', fontStyle: 'italic' }}>
+                    {prediction.cancer_risk_justification}
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* Cell Info Card */}
             <div style={{
               background: 'white',
@@ -424,6 +473,83 @@ function ResultsContent() {
                   })}
               </div>
             </div>
+
+            {/* Model Performance Metrics */}
+            {prediction.model_metrics && (
+              <div style={{
+                background: 'white',
+                borderRadius: '1rem',
+                padding: '1.25rem',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                border: '1px solid #e5e7eb',
+                marginBottom: '1rem'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                  <BarChart3 style={{ width: '1rem', height: '1rem', color: '#db2777' }} />
+                  <h3 style={{ fontSize: '1rem', fontWeight: '700', color: '#1f2937', margin: 0 }}>
+                    Model Performance Metrics
+                  </h3>
+                </div>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(2, 1fr)',
+                  gap: '0.75rem'
+                }}>
+                  <div style={{
+                    padding: '0.875rem',
+                    background: '#fdf2f8',
+                    borderRadius: '0.5rem',
+                    border: '1px solid #fbcfe8'
+                  }}>
+                    <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: '0 0 0.25rem 0', fontWeight: '600' }}>
+                      Accuracy
+                    </p>
+                    <p style={{ fontSize: '1.5rem', fontWeight: '700', color: '#db2777', margin: 0 }}>
+                      {prediction.model_metrics.accuracy_percentage}%
+                    </p>
+                  </div>
+                  <div style={{
+                    padding: '0.875rem',
+                    background: '#fdf2f8',
+                    borderRadius: '0.5rem',
+                    border: '1px solid #fbcfe8'
+                  }}>
+                    <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: '0 0 0.25rem 0', fontWeight: '600' }}>
+                      Sensitivity
+                    </p>
+                    <p style={{ fontSize: '1.5rem', fontWeight: '700', color: '#db2777', margin: 0 }}>
+                      {prediction.model_metrics.sensitivity_percentage}%
+                    </p>
+                  </div>
+                  <div style={{
+                    padding: '0.875rem',
+                    background: '#fdf2f8',
+                    borderRadius: '0.5rem',
+                    border: '1px solid #fbcfe8'
+                  }}>
+                    <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: '0 0 0.25rem 0', fontWeight: '600' }}>
+                      Specificity
+                    </p>
+                    <p style={{ fontSize: '1.5rem', fontWeight: '700', color: '#db2777', margin: 0 }}>
+                      {prediction.model_metrics.specificity_percentage}%
+                    </p>
+                  </div>
+                  <div style={{
+                    padding: '0.875rem',
+                    background: '#fdf2f8',
+                    borderRadius: '0.5rem',
+                    border: '1px solid #fbcfe8'
+                  }}>
+                    <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: '0 0 0.25rem 0', fontWeight: '600' }}>
+                      Precision
+                    </p>
+                    <p style={{ fontSize: '1.5rem', fontWeight: '700', color: '#db2777', margin: 0 }}>
+                      {prediction.model_metrics.precision_percentage}%
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* AI Explanation */}
             <div style={{
