@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
-import { Upload, Activity, Loader2, XCircle, Home, UserPlus, ArrowRight } from 'lucide-react'
+import { Upload, Activity, Loader2, XCircle, Home, UserPlus, ArrowRight, UploadCloud } from 'lucide-react'
 
 export default function UploadPage() {
   const router = useRouter()
@@ -18,12 +18,17 @@ export default function UploadPage() {
   const [registerLoading, setRegisterLoading] = useState(false)
   const [registerError, setRegisterError] = useState<string | null>(null)
 
+  const styles = `
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap');
+    * { font-family: 'DM Sans', sans-serif; }
+    .display-font { font-family: 'Outfit', sans-serif; }
+  `
+
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
       setSelectedFile(file)
       setError(null)
-
       const reader = new FileReader()
       reader.onloadend = () => {
         setPreview(reader.result as string)
@@ -34,33 +39,25 @@ export default function UploadPage() {
 
   const handlePredict = async () => {
     if (!selectedFile) return
-
     setLoading(true)
     setError(null)
     const formData = new FormData()
     formData.append('file', selectedFile)
 
     try {
-      // Use Next.js API route
       const response = await axios.post('/api/predict', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
 
-      console.log('API Response:', response.data)
-      console.log('Has AI explanation?', !!response.data.ai_explanation)
-      console.log('AI explanation content:', response.data.ai_explanation)
-
-      // Check if the prediction was successful
       if (response.data.success === false) {
         setError(response.data.error || 'Classification failed. Please try again.')
         return
       }
 
-      // Store prediction data temporarily and show registration modal
       setPendingPrediction(response.data)
       setShowRegistration(true)
     } catch (err) {
-      setError('Failed to get prediction. Make sure API is running on port 8000.')
+      setError('Failed to get prediction. Please try again.')
       console.error('Error:', err)
     } finally {
       setLoading(false)
@@ -79,22 +76,17 @@ export default function UploadPage() {
     try {
       const response = await fetch('/api/patients', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: patientName.trim(), phone: patientPhone.trim() }),
       })
 
       const data = await response.json()
 
       if (data.success) {
-        // Store patient info in sessionStorage
         sessionStorage.setItem('patientInfo', JSON.stringify({
           name: patientName.trim(),
           phone: patientPhone.trim()
         }))
-
-        // Store prediction data and navigate to results
         sessionStorage.setItem('predictionData', JSON.stringify(pendingPrediction))
         router.push('/results')
       } else {
@@ -117,28 +109,36 @@ export default function UploadPage() {
   ]
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f5f7fa' }}>
+    <div style={{ minHeight: '100vh', background: '#ffffff' }}>
+      <style>{styles}</style>
+
       {/* Header */}
       <header style={{
-        background: 'white',
-        borderBottom: '1px solid #e5e7eb',
+        background: 'rgba(255, 255, 255, 0.7)',
+        backdropFilter: 'blur(12px)',
+        borderBottom: '1px solid rgba(219, 39, 119, 0.1)',
         position: 'sticky',
         top: 0,
         zIndex: 100,
-        boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+        boxShadow: '0 1px 20px rgba(0,0,0,0.03)'
       }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '1.25rem 2rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <Activity style={{ width: '2.5rem', height: '2.5rem', color: '#db2777' }} />
-              <div>
-                <h1 style={{ fontSize: '1.75rem', fontWeight: '700', color: '#1f2937', margin: 0 }}>
-                  Cervical Cell Classifier
-                </h1>
-                <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>
-                  AI-Powered Medical Image Analysis
-                </p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <div style={{
+                width: '2.5rem',
+                height: '2.5rem',
+                borderRadius: '0.75rem',
+                background: 'linear-gradient(135deg, #db2777 0%, #be185d 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <Activity style={{ width: '1.25rem', height: '1.25rem', color: 'white' }} />
               </div>
+              <h1 style={{ fontSize: '1.375rem', fontWeight: '700', color: '#1f2937', margin: 0, letterSpacing: '-0.5px' }} className="display-font">
+                Peakily
+              </h1>
             </div>
             <button
               onClick={() => router.push('/')}
@@ -146,14 +146,14 @@ export default function UploadPage() {
                 padding: '0.75rem 1.5rem',
                 background: 'white',
                 color: '#db2777',
-                borderRadius: '0.5rem',
+                borderRadius: '0.75rem',
                 fontWeight: '600',
                 border: '1px solid #db2777',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '0.5rem',
-                transition: 'all 0.2s'
+                transition: 'all 0.3s ease'
               }}
               onMouseOver={(e) => {
                 e.currentTarget.style.background = '#db2777'
@@ -164,105 +164,51 @@ export default function UploadPage() {
                 e.currentTarget.style.color = '#db2777'
               }}
             >
-              <Home style={{ width: '1.25rem', height: '1.25rem' }} />
+              <Home style={{ width: '1rem', height: '1rem' }} />
               Home
             </button>
           </div>
         </div>
       </header>
 
-      {/* Progress Steps */}
-      <div style={{
-        maxWidth: '1400px',
-        margin: '0 auto',
-        padding: '2rem 2rem 0'
-      }}>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '1rem',
-          marginBottom: '1rem'
-        }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.75rem',
-            padding: '0.75rem 1.25rem',
-            background: '#db2777',
-            borderRadius: '0.5rem',
-            color: 'white'
-          }}>
-            <div style={{
-              width: '1.75rem',
-              height: '1.75rem',
-              borderRadius: '50%',
-              background: 'white',
-              color: '#db2777',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontWeight: '700',
-              fontSize: '0.875rem'
-            }}>1</div>
-            <span style={{ fontWeight: '600' }}>Upload Image</span>
-          </div>
-
-          <div style={{
-            width: '3rem',
-            height: '2px',
-            background: '#d1d5db'
-          }}></div>
-
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.75rem',
-            padding: '0.75rem 1.25rem',
-            background: 'white',
-            borderRadius: '0.5rem',
-            border: '1px solid #e5e7eb'
-          }}>
-            <div style={{
-              width: '1.75rem',
-              height: '1.75rem',
-              borderRadius: '50%',
-              background: '#f3f4f6',
-              color: '#9ca3af',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontWeight: '700',
-              fontSize: '0.875rem'
-            }}>2</div>
-            <span style={{ fontWeight: '600', color: '#6b7280' }}>View Results</span>
-          </div>
-        </div>
-      </div>
-
       {/* Main Content */}
-      <main style={{ maxWidth: '1400px', margin: '0 auto', padding: '1.5rem 2rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))', gap: '1.5rem' }}>
-
-          {/* Left Column - Upload */}
+      <main style={{ maxWidth: '1400px', margin: '0 auto', padding: '3rem 2rem' }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 320px',
+          gap: '2rem',
+          alignItems: 'start'
+        }}>
+          {/* Upload Section */}
           <div>
             <div style={{
               background: 'white',
-              borderRadius: '1rem',
-              padding: '1.5rem',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-              border: '1px solid #e5e7eb'
+              borderRadius: '1.5rem',
+              padding: '3rem',
+              boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+              border: '1px solid rgba(219, 39, 119, 0.1)'
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-                <Upload style={{ width: '1.25rem', height: '1.25rem', color: '#db2777' }} />
-                <h2 style={{ fontSize: '1.25rem', fontWeight: '700', color: '#1f2937', margin: 0 }}>
-                  Upload Cell Image
-                </h2>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+                <div style={{
+                  width: '3rem',
+                  height: '3rem',
+                  borderRadius: '1rem',
+                  background: 'rgba(219, 39, 119, 0.1)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <UploadCloud style={{ width: '1.5rem', height: '1.5rem', color: '#db2777' }} />
+                </div>
+                <div>
+                  <h2 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#1f2937', margin: 0 }} className="display-font">
+                    Upload Cell Image
+                  </h2>
+                  <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: '0.25rem 0 0 0' }}>
+                    PNG, JPG, BMP (max 10MB)
+                  </p>
+                </div>
               </div>
-
-              <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1rem', lineHeight: 1.5 }}>
-                Upload cervical cell image for AI classification. PNG, JPG, BMP (max 10MB).
-              </p>
 
               {!preview ? (
                 <label style={{ display: 'block', cursor: 'pointer' }}>
@@ -273,43 +219,44 @@ export default function UploadPage() {
                     style={{ display: 'none' }}
                   />
                   <div style={{
-                    border: '2px dashed #d1d5db',
-                    borderRadius: '0.75rem',
-                    padding: '2.5rem 1.5rem',
+                    border: '2px dashed rgba(219, 39, 119, 0.3)',
+                    borderRadius: '1.25rem',
+                    padding: '3rem 1.5rem',
                     textAlign: 'center',
-                    transition: 'all 0.2s',
-                    background: '#f9fafb'
+                    transition: 'all 0.3s ease',
+                    background: 'rgba(219, 39, 119, 0.02)',
+                    cursor: 'pointer'
                   }}
                   onMouseOver={(e) => {
                     e.currentTarget.style.borderColor = '#db2777'
-                    e.currentTarget.style.background = '#fdf2f8'
+                    e.currentTarget.style.background = 'rgba(219, 39, 119, 0.05)'
                   }}
                   onMouseOut={(e) => {
-                    e.currentTarget.style.borderColor = '#d1d5db'
-                    e.currentTarget.style.background = '#f9fafb'
+                    e.currentTarget.style.borderColor = 'rgba(219, 39, 119, 0.3)'
+                    e.currentTarget.style.background = 'rgba(219, 39, 119, 0.02)'
                   }}>
-                    <Upload style={{ width: '3rem', height: '3rem', color: '#9ca3af', margin: '0 auto 0.75rem' }} />
-                    <p style={{ fontSize: '1rem', fontWeight: '600', color: '#374151', margin: '0 0 0.25rem 0' }}>
+                    <UploadCloud style={{ width: '3.5rem', height: '3.5rem', color: '#db2777', margin: '0 auto 1rem' }} />
+                    <p style={{ fontSize: '1.125rem', fontWeight: '600', color: '#1f2937', margin: '0 0 0.5rem 0' }}>
                       Click to upload image
                     </p>
-                    <p style={{ fontSize: '0.8125rem', color: '#6b7280', margin: 0 }}>
-                      PNG, JPG, BMP (max 10MB)
+                    <p style={{ fontSize: '0.875rem', color: '#9ca3af', margin: 0 }}>
+                      or drag and drop
                     </p>
                   </div>
                 </label>
               ) : (
                 <div>
                   <div style={{
-                    borderRadius: '0.75rem',
+                    borderRadius: '1.25rem',
                     overflow: 'hidden',
                     background: '#f3f4f6',
                     border: '1px solid #e5e7eb',
-                    marginBottom: '1rem'
+                    marginBottom: '1.5rem'
                   }}>
                     <img
                       src={preview}
                       alt="Preview"
-                      style={{ width: '100%', height: '16rem', objectFit: 'contain' }}
+                      style={{ width: '100%', height: '300px', objectFit: 'cover' }}
                     />
                   </div>
 
@@ -323,18 +270,24 @@ export default function UploadPage() {
                       />
                       <div style={{
                         width: '100%',
-                        padding: '0.875rem',
+                        padding: '1rem',
                         background: 'white',
                         color: '#374151',
-                        borderRadius: '0.5rem',
+                        borderRadius: '0.75rem',
                         fontWeight: '600',
                         textAlign: 'center',
                         cursor: 'pointer',
-                        transition: 'all 0.2s',
+                        transition: 'all 0.3s ease',
                         border: '1px solid #e5e7eb'
                       }}
-                      onMouseOver={(e) => e.currentTarget.style.background = '#f9fafb'}
-                      onMouseOut={(e) => e.currentTarget.style.background = 'white'}>
+                      onMouseOver={(e) => {
+                        e.currentTarget.style.background = '#f9fafb'
+                        e.currentTarget.style.borderColor = '#db2777'
+                      }}
+                      onMouseOut={(e) => {
+                        e.currentTarget.style.background = 'white'
+                        e.currentTarget.style.borderColor = '#e5e7eb'
+                      }}>
                         Change Image
                       </div>
                     </label>
@@ -344,11 +297,11 @@ export default function UploadPage() {
                       disabled={loading}
                       style={{
                         flex: 2,
-                        padding: '0.875rem 1.5rem',
-                        background: '#db2777',
+                        padding: '1rem 1.5rem',
+                        background: 'linear-gradient(135deg, #db2777 0%, #be185d 100%)',
                         color: 'white',
-                        borderRadius: '0.5rem',
-                        fontWeight: '600',
+                        borderRadius: '0.75rem',
+                        fontWeight: '700',
                         border: 'none',
                         cursor: loading ? 'not-allowed' : 'pointer',
                         display: 'flex',
@@ -356,10 +309,11 @@ export default function UploadPage() {
                         justifyContent: 'center',
                         gap: '0.5rem',
                         opacity: loading ? 0.6 : 1,
-                        transition: 'background 0.2s'
+                        transition: 'all 0.3s ease',
+                        boxShadow: '0 4px 15px rgba(219, 39, 119, 0.3)'
                       }}
-                      onMouseOver={(e) => !loading && (e.currentTarget.style.background = '#be185d')}
-                      onMouseOut={(e) => e.currentTarget.style.background = '#db2777'}
+                      onMouseOver={(e) => !loading && (e.currentTarget.style.transform = 'translateY(-2px)')}
+                      onMouseOut={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
                     >
                       {loading ? (
                         <>
@@ -383,7 +337,7 @@ export default function UploadPage() {
                       padding: '1rem',
                       background: '#fef2f2',
                       border: '1px solid #fecaca',
-                      borderRadius: '0.5rem',
+                      borderRadius: '0.75rem',
                       color: '#b91c1c',
                       marginTop: '1rem'
                     }}>
@@ -396,75 +350,60 @@ export default function UploadPage() {
             </div>
           </div>
 
-          {/* Right Column - Reference */}
-          <div>
-            <div style={{
-              background: 'white',
-              borderRadius: '1rem',
-              padding: '1.5rem',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-              border: '1px solid #e5e7eb'
-            }}>
-              <h3 style={{ fontSize: '1.125rem', fontWeight: '700', color: '#1f2937', marginBottom: '0.5rem' }}>
-                Cell Type Reference
-              </h3>
-              <p style={{ fontSize: '0.8125rem', color: '#6b7280', marginBottom: '1rem', lineHeight: 1.5 }}>
-                AI model can identify these five cervical cell types:
-              </p>
-              <div>
-                {cellTypes.map((cell) => (
-                  <div key={cell.name} style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.75rem',
-                    padding: '0.625rem',
+          {/* Sidebar - Cell Reference */}
+          <div style={{
+            background: 'white',
+            borderRadius: '1.5rem',
+            padding: '1.5rem',
+            boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+            border: '1px solid rgba(219, 39, 119, 0.1)',
+            position: 'sticky',
+            top: '80px',
+            height: 'fit-content'
+          }}>
+            <h3 style={{ fontSize: '1rem', fontWeight: '700', color: '#1f2937', marginBottom: '1rem' }} className="display-font">
+              Cell Types
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              {cellTypes.map((cell) => (
+                <div key={cell.name} style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                  padding: '0.75rem',
+                  borderRadius: '0.75rem',
+                  background: '#f9fafb',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.background = 'rgba(219, 39, 119, 0.08)'
+                  e.currentTarget.style.transform = 'translateX(4px)'
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.background = '#f9fafb'
+                  e.currentTarget.style.transform = 'translateX(0)'
+                }}>
+                  <div style={{
+                    width: '2rem',
+                    height: '2rem',
                     borderRadius: '0.5rem',
-                    transition: 'background 0.2s',
-                    marginBottom: '0.5rem'
-                  }}
-                  onMouseOver={(e) => e.currentTarget.style.background = '#f9fafb'}
-                  onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}>
-                    <div style={{
-                      width: '2.5rem',
-                      height: '2.5rem',
-                      borderRadius: '0.375rem',
-                      background: cell.color,
-                      flexShrink: 0
-                    }}></div>
-                    <div style={{ flex: 1 }}>
-                      <p style={{ fontWeight: '600', color: '#1f2937', fontSize: '0.8125rem', margin: '0 0 0.125rem 0' }}>
-                        {cell.name}
-                      </p>
-                      <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: 0, lineHeight: 1.3 }}>
-                        {cell.desc}
-                      </p>
-                    </div>
+                    background: cell.color,
+                    flexShrink: 0
+                  }} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontWeight: '600', color: '#1f2937', fontSize: '0.8125rem', margin: 0 }}>
+                      {cell.name}
+                    </p>
+                    <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: '0.125rem 0 0 0' }}>
+                      {cell.desc}
+                    </p>
                   </div>
-                ))}
-              </div>
-
-              <div style={{
-                marginTop: '1rem',
-                padding: '1rem',
-                background: '#fdf2f8',
-                borderRadius: '0.625rem',
-                border: '1px solid #fbcfe8'
-              }}>
-                <h4 style={{ fontSize: '0.8125rem', fontWeight: '700', color: '#db2777', marginBottom: '0.5rem' }}>
-                  How Classification Works
-                </h4>
-                <ul style={{ fontSize: '0.75rem', color: '#6b7280', margin: 0, paddingLeft: '1.125rem', lineHeight: 1.5 }}>
-                  <li>Upload cervical cell image</li>
-                  <li>AI analyzes cell morphology</li>
-                  <li>Get classification scores</li>
-                  <li>View AI medical insights</li>
-                </ul>
-              </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </main>
-
 
       {/* Registration Modal */}
       {showRegistration && (
@@ -474,27 +413,28 @@ export default function UploadPage() {
           left: 0,
           right: 0,
           bottom: 0,
-          background: 'rgba(0, 0, 0, 0.5)',
+          background: 'rgba(0, 0, 0, 0.6)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           zIndex: 1000,
-          padding: '1rem'
+          padding: '1rem',
+          backdropFilter: 'blur(4px)'
         }}>
           <div style={{
             background: 'white',
-            borderRadius: '1rem',
+            borderRadius: '1.5rem',
             padding: '2rem',
             maxWidth: '500px',
             width: '100%',
             boxShadow: '0 25px 50px rgba(0, 0, 0, 0.25)'
           }}>
-            <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+            <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
               <div style={{
                 width: '3.5rem',
                 height: '3.5rem',
-                background: '#fdf2f8',
-                borderRadius: '0.75rem',
+                background: 'rgba(219, 39, 119, 0.1)',
+                borderRadius: '1rem',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -502,15 +442,15 @@ export default function UploadPage() {
               }}>
                 <UserPlus style={{ width: '1.75rem', height: '1.75rem', color: '#db2777' }} />
               </div>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#1f2937', marginBottom: '0.5rem' }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#1f2937', marginBottom: '0.5rem' }} className="display-font">
                 Patient Registration
               </h2>
               <p style={{ fontSize: '0.875rem', color: '#6b7280', lineHeight: 1.5 }}>
-                Please enter patient information to view results
+                Enter patient information to view results
               </p>
             </div>
 
-            <div style={{ marginBottom: '1.25rem' }}>
+            <div style={{ marginBottom: '1.5rem' }}>
               <label style={{
                 display: 'block',
                 fontSize: '0.875rem',
@@ -527,10 +467,10 @@ export default function UploadPage() {
                 placeholder="Enter patient name"
                 style={{
                   width: '100%',
-                  padding: '0.75rem 1rem',
-                  fontSize: '0.9375rem',
+                  padding: '0.875rem 1rem',
+                  fontSize: '1rem',
                   border: '1px solid #d1d5db',
-                  borderRadius: '0.5rem',
+                  borderRadius: '0.75rem',
                   outline: 'none',
                   transition: 'border-color 0.2s',
                   boxSizing: 'border-box'
@@ -540,7 +480,7 @@ export default function UploadPage() {
               />
             </div>
 
-            <div style={{ marginBottom: '1.25rem' }}>
+            <div style={{ marginBottom: '1.5rem' }}>
               <label style={{
                 display: 'block',
                 fontSize: '0.875rem',
@@ -557,10 +497,10 @@ export default function UploadPage() {
                 placeholder="Enter phone number"
                 style={{
                   width: '100%',
-                  padding: '0.75rem 1rem',
-                  fontSize: '0.9375rem',
+                  padding: '0.875rem 1rem',
+                  fontSize: '1rem',
                   border: '1px solid #d1d5db',
-                  borderRadius: '0.5rem',
+                  borderRadius: '0.75rem',
                   outline: 'none',
                   transition: 'border-color 0.2s',
                   boxSizing: 'border-box'
@@ -575,10 +515,10 @@ export default function UploadPage() {
                 padding: '0.75rem',
                 background: '#fef2f2',
                 border: '1px solid #fecaca',
-                borderRadius: '0.5rem',
+                borderRadius: '0.75rem',
                 color: '#b91c1c',
                 fontSize: '0.8125rem',
-                marginBottom: '1.25rem'
+                marginBottom: '1.5rem'
               }}>
                 {registerError}
               </div>
@@ -589,12 +529,12 @@ export default function UploadPage() {
               disabled={registerLoading}
               style={{
                 width: '100%',
-                padding: '0.875rem',
-                background: '#db2777',
+                padding: '1rem',
+                background: 'linear-gradient(135deg, #db2777 0%, #be185d 100%)',
                 color: 'white',
-                borderRadius: '0.5rem',
-                fontWeight: '600',
-                fontSize: '0.9375rem',
+                borderRadius: '0.75rem',
+                fontWeight: '700',
+                fontSize: '1rem',
                 border: 'none',
                 cursor: registerLoading ? 'not-allowed' : 'pointer',
                 display: 'flex',
@@ -602,20 +542,21 @@ export default function UploadPage() {
                 justifyContent: 'center',
                 gap: '0.5rem',
                 opacity: registerLoading ? 0.6 : 1,
-                transition: 'background 0.2s'
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 15px rgba(219, 39, 119, 0.3)'
               }}
-              onMouseOver={(e) => !registerLoading && (e.currentTarget.style.background = '#be185d')}
-              onMouseOut={(e) => e.currentTarget.style.background = '#db2777'}
+              onMouseOver={(e) => !registerLoading && (e.currentTarget.style.transform = 'translateY(-2px)')}
+              onMouseOut={(e) => (e.currentTarget.style.transform = 'translateY(0)')}
             >
               {registerLoading ? (
                 <>
-                  <Loader2 style={{ width: '1.125rem', height: '1.125rem', animation: 'spin 1s linear infinite' }} />
+                  <Loader2 style={{ width: '1rem', height: '1rem', animation: 'spin 1s linear infinite' }} />
                   Saving...
                 </>
               ) : (
                 <>
                   View Results
-                  <ArrowRight style={{ width: '1.125rem', height: '1.125rem' }} />
+                  <ArrowRight style={{ width: '1rem', height: '1rem' }} />
                 </>
               )}
             </button>
