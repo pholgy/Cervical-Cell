@@ -5,11 +5,20 @@ const FIREBASE_API_KEY = process.env.FIREBASE_API_KEY
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, phone } = await request.json()
+    const { idCard, name, surname, phone, dateOfBirth, gender } = await request.json()
 
-    if (!name || !phone) {
+    // Validate required fields
+    if (!idCard || !name || !surname || !dateOfBirth) {
       return NextResponse.json(
-        { success: false, error: 'Name and phone number are required' },
+        { success: false, error: 'ID Card, Name, Surname, and Date of Birth are required' },
+        { status: 400 }
+      )
+    }
+
+    // Validate ID Card format (13 digits)
+    if (!/^\d{13}$/.test(idCard)) {
+      return NextResponse.json(
+        { success: false, error: 'ID Card must be 13 digits' },
         { status: 400 }
       )
     }
@@ -23,7 +32,8 @@ export async function POST(request: NextRequest) {
     }
 
     const timestamp = new Date().toISOString()
-    const patientId = Date.now().toString()
+    // Use ID Card as patient identifier
+    const patientId = idCard
 
     // Save to Firebase Realtime Database
     const response = await fetch(
@@ -32,8 +42,12 @@ export async function POST(request: NextRequest) {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          idCard,
           name,
-          phone,
+          surname,
+          phone: phone || '',
+          dateOfBirth,
+          gender: gender || '',
           registeredAt: timestamp
         })
       }
@@ -51,7 +65,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       message: 'Patient registered successfully',
-      patient: { name, phone, timestamp, id: patientId }
+      patient: { idCard, name, surname, phone, dateOfBirth, gender, registeredAt: timestamp }
     })
   } catch (error) {
     console.error('Error registering patient:', error)
@@ -85,8 +99,12 @@ export async function GET() {
 
     const patients = Object.entries(data).map(([id, patient]: [string, any]) => ({
       id,
+      idCard: patient.idCard,
       name: patient.name,
-      phone: patient.phone,
+      surname: patient.surname,
+      phone: patient.phone || '',
+      dateOfBirth: patient.dateOfBirth,
+      gender: patient.gender || '',
       registeredAt: patient.registeredAt
     }))
 

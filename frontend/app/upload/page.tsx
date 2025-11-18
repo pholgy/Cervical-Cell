@@ -13,8 +13,12 @@ export default function UploadPage() {
   const [error, setError] = useState<string | null>(null)
   const [showRegistration, setShowRegistration] = useState(false)
   const [pendingPrediction, setPendingPrediction] = useState<any>(null)
+  const [patientIdCard, setPatientIdCard] = useState('')
   const [patientName, setPatientName] = useState('')
+  const [patientSurname, setPatientSurname] = useState('')
   const [patientPhone, setPatientPhone] = useState('')
+  const [patientDateOfBirth, setPatientDateOfBirth] = useState('')
+  const [patientGender, setPatientGender] = useState('')
   const [registerLoading, setRegisterLoading] = useState(false)
   const [registerError, setRegisterError] = useState<string | null>(null)
 
@@ -65,8 +69,15 @@ export default function UploadPage() {
   }
 
   const handleRegister = async () => {
-    if (!patientName.trim() || !patientPhone.trim()) {
-      setRegisterError('Please fill in all fields')
+    // Validate required fields
+    if (!patientIdCard.trim() || !patientName.trim() || !patientSurname.trim() || !patientDateOfBirth.trim()) {
+      setRegisterError('Please fill in all required fields (ID Card, Name, Surname, Date of Birth)')
+      return
+    }
+
+    // Validate ID Card format (13 digits)
+    if (!/^\d{13}$/.test(patientIdCard.trim())) {
+      setRegisterError('ID Card must be 13 digits')
       return
     }
 
@@ -77,15 +88,26 @@ export default function UploadPage() {
       const response = await fetch('/api/patients', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: patientName.trim(), phone: patientPhone.trim() }),
+        body: JSON.stringify({
+          idCard: patientIdCard.trim(),
+          name: patientName.trim(),
+          surname: patientSurname.trim(),
+          phone: patientPhone.trim(),
+          dateOfBirth: patientDateOfBirth.trim(),
+          gender: patientGender.trim()
+        }),
       })
 
       const data = await response.json()
 
       if (data.success) {
         sessionStorage.setItem('patientInfo', JSON.stringify({
+          idCard: patientIdCard.trim(),
           name: patientName.trim(),
-          phone: patientPhone.trim()
+          surname: patientSurname.trim(),
+          phone: patientPhone.trim(),
+          dateOfBirth: patientDateOfBirth.trim(),
+          gender: patientGender.trim()
         }))
         sessionStorage.setItem('predictionData', JSON.stringify(pendingPrediction))
         router.push('/results')
@@ -450,25 +472,27 @@ export default function UploadPage() {
               </p>
             </div>
 
-            <div style={{ marginBottom: '1.5rem' }}>
+            {/* ID Card (Required) */}
+            <div style={{ marginBottom: '1.25rem' }}>
               <label style={{
                 display: 'block',
                 fontSize: '0.875rem',
                 fontWeight: '600',
                 color: '#374151',
-                marginBottom: '0.5rem'
+                marginBottom: '0.375rem'
               }}>
-                Patient Name
+                ID Card Number <span style={{ color: '#db2777' }}>*</span>
               </label>
               <input
                 type="text"
-                value={patientName}
-                onChange={(e) => setPatientName(e.target.value)}
-                placeholder="Enter patient name"
+                value={patientIdCard}
+                onChange={(e) => setPatientIdCard(e.target.value.replace(/\D/g, ''))}
+                placeholder="เลขบัตรประชาชน (13 digits)"
+                maxLength={13}
                 style={{
                   width: '100%',
-                  padding: '0.875rem 1rem',
-                  fontSize: '1rem',
+                  padding: '0.75rem 1rem',
+                  fontSize: '0.95rem',
                   border: '1px solid #d1d5db',
                   borderRadius: '0.75rem',
                   outline: 'none',
@@ -480,25 +504,26 @@ export default function UploadPage() {
               />
             </div>
 
-            <div style={{ marginBottom: '1.5rem' }}>
+            {/* Name (Required) */}
+            <div style={{ marginBottom: '1.25rem' }}>
               <label style={{
                 display: 'block',
                 fontSize: '0.875rem',
                 fontWeight: '600',
                 color: '#374151',
-                marginBottom: '0.5rem'
+                marginBottom: '0.375rem'
               }}>
-                Phone Number
+                First Name <span style={{ color: '#db2777' }}>*</span>
               </label>
               <input
-                type="tel"
-                value={patientPhone}
-                onChange={(e) => setPatientPhone(e.target.value)}
-                placeholder="Enter phone number"
+                type="text"
+                value={patientName}
+                onChange={(e) => setPatientName(e.target.value)}
+                placeholder="ชื่อ"
                 style={{
                   width: '100%',
-                  padding: '0.875rem 1rem',
-                  fontSize: '1rem',
+                  padding: '0.75rem 1rem',
+                  fontSize: '0.95rem',
                   border: '1px solid #d1d5db',
                   borderRadius: '0.75rem',
                   outline: 'none',
@@ -508,6 +533,134 @@ export default function UploadPage() {
                 onFocus={(e) => e.currentTarget.style.borderColor = '#db2777'}
                 onBlur={(e) => e.currentTarget.style.borderColor = '#d1d5db'}
               />
+            </div>
+
+            {/* Surname (Required) */}
+            <div style={{ marginBottom: '1.25rem' }}>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '600',
+                color: '#374151',
+                marginBottom: '0.375rem'
+              }}>
+                Surname <span style={{ color: '#db2777' }}>*</span>
+              </label>
+              <input
+                type="text"
+                value={patientSurname}
+                onChange={(e) => setPatientSurname(e.target.value)}
+                placeholder="นามสกุล"
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem',
+                  fontSize: '0.95rem',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '0.75rem',
+                  outline: 'none',
+                  transition: 'border-color 0.2s',
+                  boxSizing: 'border-box'
+                }}
+                onFocus={(e) => e.currentTarget.style.borderColor = '#db2777'}
+                onBlur={(e) => e.currentTarget.style.borderColor = '#d1d5db'}
+              />
+            </div>
+
+            {/* Phone Number (Optional) */}
+            <div style={{ marginBottom: '1.25rem' }}>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '600',
+                color: '#374151',
+                marginBottom: '0.375rem'
+              }}>
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                value={patientPhone}
+                onChange={(e) => setPatientPhone(e.target.value)}
+                placeholder="เบอร์โทร (optional)"
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem',
+                  fontSize: '0.95rem',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '0.75rem',
+                  outline: 'none',
+                  transition: 'border-color 0.2s',
+                  boxSizing: 'border-box'
+                }}
+                onFocus={(e) => e.currentTarget.style.borderColor = '#db2777'}
+                onBlur={(e) => e.currentTarget.style.borderColor = '#d1d5db'}
+              />
+            </div>
+
+            {/* Date of Birth (Required) */}
+            <div style={{ marginBottom: '1.25rem' }}>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '600',
+                color: '#374151',
+                marginBottom: '0.375rem'
+              }}>
+                Date of Birth <span style={{ color: '#db2777' }}>*</span>
+              </label>
+              <input
+                type="date"
+                value={patientDateOfBirth}
+                onChange={(e) => setPatientDateOfBirth(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem',
+                  fontSize: '0.95rem',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '0.75rem',
+                  outline: 'none',
+                  transition: 'border-color 0.2s',
+                  boxSizing: 'border-box'
+                }}
+                onFocus={(e) => e.currentTarget.style.borderColor = '#db2777'}
+                onBlur={(e) => e.currentTarget.style.borderColor = '#d1d5db'}
+              />
+            </div>
+
+            {/* Gender (Optional) */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: '600',
+                color: '#374151',
+                marginBottom: '0.375rem'
+              }}>
+                Gender
+              </label>
+              <select
+                value={patientGender}
+                onChange={(e) => setPatientGender(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem',
+                  fontSize: '0.95rem',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '0.75rem',
+                  outline: 'none',
+                  transition: 'border-color 0.2s',
+                  boxSizing: 'border-box',
+                  backgroundColor: 'white',
+                  cursor: 'pointer'
+                }}
+                onFocus={(e) => e.currentTarget.style.borderColor = '#db2777'}
+                onBlur={(e) => e.currentTarget.style.borderColor = '#d1d5db'}
+              >
+                <option value="">Select Gender</option>
+                <option value="Male">Male (ชาย)</option>
+                <option value="Female">Female (หญิง)</option>
+                <option value="Other">Other (อื่น)</option>
+              </select>
             </div>
 
             {registerError && (
