@@ -98,7 +98,7 @@ export default function Home() {
               </div>
               <div>
                 <h1 style={{ fontSize: '1.375rem', fontWeight: '700', color: '#1f2937', margin: '0.25rem 0 0 0', letterSpacing: '-0.5px' }} className="display-font">
-                  Peakily
+                  NARI
                 </h1>
               </div>
             </div>
@@ -447,7 +447,7 @@ export default function Home() {
       }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto', textAlign: 'center' }}>
           <p style={{ color: '#6b7280', fontSize: '0.875rem', margin: 0 }}>
-            <strong>Peakily</strong> • Medical AI Classification • Powered by Gemini Vision AI
+            <strong>NARI</strong> • Medical AI Classification • Powered by Gemini Vision AI
           </p>
           <p style={{ color: '#9ca3af', fontSize: '0.75rem', margin: '1rem 0 0 0' }}>
             For medical professionals • Bilingual support • Accuracy 94% • Sensitivity 93%

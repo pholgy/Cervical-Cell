@@ -159,7 +159,7 @@ export default function UploadPage() {
                 <Activity style={{ width: '1.25rem', height: '1.25rem', color: 'white' }} />
               </div>
               <h1 style={{ fontSize: '1.375rem', fontWeight: '700', color: '#1f2937', margin: 0, letterSpacing: '-0.5px' }} className="display-font">
-                Peakily
+                NARI
               </h1>
             </div>
             <button

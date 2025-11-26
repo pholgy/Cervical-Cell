@@ -150,7 +150,7 @@ function ResultsContent() {
               </div>
               <div>
                 <h1 style={{ fontSize: '1.375rem', fontWeight: '700', color: '#1f2937', margin: '0.25rem 0 0 0', letterSpacing: '-0.5px' }} className="display-font">
-                  Peakily
+                  NARI
                 </h1>
               </div>
             </div>
