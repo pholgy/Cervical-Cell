@@ -95,7 +95,7 @@ Even if the image is unclear or you're uncertain, you MUST provide your best cla
         # Use Gemini Vision to classify
         print("[INFO] Classifying image with Gemini Vision...")
         model = genai.GenerativeModel(
-            'gemini-2.0-flash-exp',
+            'gemini-2.5-flash',
             generation_config={"response_mime_type": "application/json"}
         )
         response = model.generate_content([classification_prompt, image])
@@ -146,7 +146,7 @@ Important clinical points and recommendations for follow-up.
 Keep it concise, professional, and actionable. Use proper markdown formatting with headers (##), bold (**text**), and lists. Max 200 words. DO NOT use JSON format - use plain markdown text."""
 
         # Create a new model instance without JSON mode for text explanation
-        explanation_model = genai.GenerativeModel('gemini-2.0-flash-exp')
+        explanation_model = genai.GenerativeModel('gemini-2.5-flash')
         explanation_response = explanation_model.generate_content(explanation_prompt)
         ai_explanation = explanation_response.text.strip()
 

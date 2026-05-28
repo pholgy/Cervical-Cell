@@ -49,7 +49,7 @@ Base your classification on visible features. Even if uncertain, you MUST provid
 
     // Call Gemini Vision for classification
     const model = genAI.getGenerativeModel({
-      model: 'gemini-2.0-flash-exp',
+      model: 'gemini-2.5-flash',
       generationConfig: {
         responseMimeType: 'application/json'
       }
@@ -110,7 +110,7 @@ Write a bilingual markdown-formatted explanation with these sections. For EACH s
 
 Keep it concise, professional, and actionable. Use proper markdown formatting with headers (##), bold (**text**), and lists. Provide accurate Thai medical terminology. DO NOT use JSON format - use plain markdown text.`
 
-    const explanationModel = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' })
+    const explanationModel = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
     const explanationResult = await explanationModel.generateContent(explanationPrompt)
     let aiExplanation = explanationResult.response.text()
 
@@ -158,7 +158,7 @@ Risk assessment rules:
 - Apply confidence as multiplier to percentages`
 
     const cancerRiskModel = genAI.getGenerativeModel({
-      model: 'gemini-2.0-flash-exp',
+      model: 'gemini-2.5-flash',
       generationConfig: {
         responseMimeType: 'application/json'
       }
